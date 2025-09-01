@@ -37,9 +37,22 @@ def evaluate_models(X_train, y_train,X_test,y_test,models,param):
             gs.fit(X_train,y_train)
 
             model.set_params(**gs.best_params_)
-            model.fit(X_train,y_train)
+            
+            # Takes the best hyperparameter values found by GridSearchCV (a dict) and applies them to the model
+            # object so that the model instance now uses those hyperparameter values. 
+            
+            # The ** unpacks the dict into keyword arguments for set_params().
+            
+            # Notes : Redundancy / double refit: GridSearchCV defaults to refit=True, so after gs.fit(X_train, 
+            #         y_train) it already refits the best estimator on the full training set and you can use 
+            #         gs.best_estimator_ directly. Setting params on model and then calling model.fit(...) 
+            #         refits again (not harmful but unnecessary).
 
-            #model.fit(X_train, y_train)  # Train model
+            #         Side effects on original objects: You are modifying the model objects that are stored in 
+            #         your models dict. If you want to keep the original unmodified, clone the estimator before 
+            #         set_params (use sklearn.base.clone).
+
+            model.fit(X_train,y_train)
 
             y_train_pred = model.predict(X_train)
 

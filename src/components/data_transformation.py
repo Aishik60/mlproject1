@@ -28,7 +28,7 @@ class DataTransformation:
 # Easy access: any method in DataTransformation can read configuration through self.data_transformation_config.
 
 # Centralized defaults: all defaults live in one place (DataTransformationConfig), making unit tests 
-# and experiments easier.
+#                       and experiments easier.
 
     def get_data_transformer_object(self):
         
@@ -48,13 +48,7 @@ class DataTransformation:
                 "test_preparation_course",
             ]
 
-            num_pipeline= Pipeline(
-                steps=[
-                ("imputer",SimpleImputer(strategy="median")),
-                ("scaler",StandardScaler())
-
-                ]
-            )
+            num_pipeline=Pipeline(steps=[("imputer",SimpleImputer(strategy="median")),("scaler",StandardScaler())])
 
             cat_pipeline=Pipeline(
                 steps=[
@@ -71,7 +65,6 @@ class DataTransformation:
                 [
                 ("num_pipeline",num_pipeline,numerical_columns),
                 ("cat_pipelines",cat_pipeline,categorical_columns)
-
                 ]
             )
 
@@ -109,10 +102,10 @@ class DataTransformation:
             input_feature_train_arr=preprocessing_obj.fit_transform(input_feature_train_df)
             input_feature_test_arr=preprocessing_obj.transform(input_feature_test_df)
 
-            # np.c_[A, B] stacks arrays column-wise (i.e., concatenates along axis=1).
-
             train_arr = np.c_[ input_feature_train_arr, np.array(target_feature_train_df) ]
             test_arr = np.c_[ input_feature_test_arr, np.array(target_feature_test_df) ]
+
+            # np.c_[A, B] stacks arrays column-wise (i.e., concatenates along axis=1).
 
             logging.info(f"Saved preprocessing object.")
 
@@ -123,14 +116,14 @@ class DataTransformation:
 
             )
 
-            # This calls your save_object utility (the pickle writer you showed earlier) to persist the fitted 
-            # preprocessing_obj to disk at the configured path.
+            # This calls our save_object utility (the pickle writer) to persist the fitted preprocessing_obj 
+            # to disk at the configured path.
 
             # The fitted preprocessor contains learned parameters (medians, means/scales, fitted one-hot categories
             # ,encoders’ state). We must use the same transformation in training and later at inference/prediction
             # time to guarantee that new data is transformed exactly the same way.
 
-            # Saving allows us to deploy the pipeline, or to load the preprocessor later when you train a model
+            # Saving allows us to deploy the pipeline, or to load the preprocessor later when we train a model
             # in a separate step or serve the model in production.
 
             return (
